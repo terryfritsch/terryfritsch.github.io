@@ -1,0 +1,15 @@
+html,body{
+    height:100%;
+    padding:0;
+    margin:0;
+    width:100%;
+}
+.life-container {
+    height: 100%;
+}
+#life-canvas {
+    height:100%;
+    image-rendering:pixelated;
+    display:block;
+    margin:auto;
+}
