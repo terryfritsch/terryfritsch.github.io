@@ -1,84 +1,15 @@
-name: Auto-handle AI PRs
-
+name: Auto Handle AI PR
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-
-permissions:
-  contents: write        # needed to merge
-  pull-requests: write   # needed to approve / undraft
-  statuses: read
-  checks: read
-
+    branches:
+      - main
 jobs:
-  auto_ai_pr:
+  handle:
     runs-on: ubuntu-latest
-
-    # 🔒 SAFETY FILTERS - adjust these for your setup
-    if: >
-      github.event.pull_request.draft == true &&
-      github.event.pull_request.user.login == 'terryfritsch' &&
-      startsWith(github.event.pull_request.head.ref, 'agent-')
-
     steps:
-      - name: Show PR info (debug)
-        run: |
-          echo "PR #${{ github.event.pull_request.number }}"
-          echo "Author: ${{ github.event.pull_request.user.login }}"
-          echo "Head ref: ${{ github.event.pull_request.head.ref }}"
-          echo "Draft: ${{ github.event.pull_request.draft }}"
-
-      - name: Undraft PR (mark ready for review)
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { owner, repo, number } = context.issue;
-            const pr = await github.rest.pulls.get({ owner, repo, pull_number: number });
-            if (pr.data.draft) {
-              console.log("PR is draft; converting to ready for review...");
-              await github.rest.pulls.update({
-                owner,
-                repo,
-                pull_number: number,
-                draft: false
-              });
-            } else {
-              console.log("PR already ready for review; nothing to do.");
-            }
-
-      - name: Approve PR
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { owner, repo, number } = context.issue;
-            console.log("Creating approval review...");
-            await github.rest.pulls.createReview({
-              owner,
-              repo,
-              pull_number: number,
-              event: "APPROVE",
-              body: "Auto-approved AI PR via workflow."
-            });
-
-      - name: Try merge PR
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { owner, repo, number } = context.issue;
-            console.log("Attempting to merge PR...");
-
-            try {
-              const result = await github.rest.pulls.merge({
-                owner,
-                repo,
-                pull_number: number,
-                merge_method: "squash"  // options: merge, squash, rebase
-              });
-              console.log("Merge result:", result.data);
-            } catch (error) {
-              console.log("Merge failed (likely due to required checks or protections).");
-              console.log(error.message);
-            }
+      - name: Check if branch starts with 'Copilot-'
+        if: startsWith(github.event.pull_request.head.ref, 'Copilot-')
+        run: echo 'Handling PR from Copilot branch.'
+      - name: Run your action
+        run: echo 'This is where your action logic goes.'
