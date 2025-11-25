@@ -1,4 +1,6 @@
-# Commit Message Standards
-- Use present tense when describing actions.
-- Include a concise summary, followed by a detailed explanation if necessary.
-- Reference related issues or PRs where applicable.
+# Copilot Instructions for Pull Requests
+
+- **Pull Request Status:** Always open pull requests as "ready for review."
+- **Repository:** terryfritsch/terryfritsch.github.io
+
+These instructions should be followed when Copilot creates pull requests for this repository.
