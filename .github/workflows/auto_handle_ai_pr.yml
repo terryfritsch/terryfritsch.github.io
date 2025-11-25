@@ -18,7 +18,7 @@ jobs:
     if: >
       github.event.pull_request.draft == true &&
       github.event.pull_request.user.login == 'terryfritsch' &&
-      startsWith(github.event.pull_request.head.ref, 'ai/')
+      startsWith(github.event.pull_request.head.ref, 'agent-')
 
     steps:
       - name: Show PR info (debug)
